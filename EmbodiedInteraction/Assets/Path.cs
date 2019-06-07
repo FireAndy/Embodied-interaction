@@ -24,6 +24,8 @@ public class Path : MonoBehaviour
         public Vector3 cur;
         public Vector3 next;
         public Vector3 dir;
+
+        public int index;
     }
 
 
@@ -74,13 +76,14 @@ public void GeneratePath(){
     public PathNode GetClosestPointOnPath(Vector3 pos){
         float dist = 1000;
         PathNode result = new PathNode();
-        for(int i = 0 ; i < positions.Count; i++){
+        for(int i = 0 ; i < positions.Count - 1; i++){
 
             float temp = Vector3.Distance(pos, positions[i]);
 
             if(temp < dist){
                 dist = temp;
-                result = new PathNode{cur = positions[i], dir = positions[i + 1]- positions[i], next =  positions[i + 1]};
+                
+                result = new PathNode{cur = positions[i], dir = positions[i + 1]- positions[i], next =  positions[i + 1], index = i};
             }
         }
         return result;
