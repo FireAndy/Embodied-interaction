@@ -5,6 +5,7 @@ using UnityEngine;
 public class Path : MonoBehaviour
 {
     // Start is called before the first frame update
+    public Transform smogParticle;
     public List<Transform> nodes;
     public List<Vector3> positions;
     public int subdiv = 10;
@@ -13,7 +14,21 @@ public class Path : MonoBehaviour
     public Transform hand;
     void Start()
     {
-        positions = new List<Vector3>();
+        
+        GeneratePath();
+        //GenerateSmog();
+    }
+
+    public struct PathNode{
+        public Vector3 prev;
+        public Vector3 cur;
+        public Vector3 next;
+        public Vector3 dir;
+    }
+
+
+public void GeneratePath(){
+     positions = new List<Vector3>();
         if(nodes.Count > 0){
             
             for(int i = 0 ; i < nodes.Count - 1; i++){
@@ -30,18 +45,13 @@ public class Path : MonoBehaviour
             }
         }
 
-    }
-
-    public struct PathNode{
-        public Vector3 prev;
-        public Vector3 cur;
-        public Vector3 next;
-        public Vector3 dir;
-    }
-
+}
     // Update is called once per frame
     void Update()
     {
+       
+        GeneratePath();
+
         if(positions.Count > 0){
             for(int i = 0 ; i < positions.Count - 1; i++){
                 Debug.DrawLine(positions[i] + Vector3.right, positions[i+1]+ Vector3.right, Color.red);
@@ -52,6 +62,12 @@ public class Path : MonoBehaviour
             PathNode node = GetClosestPointOnPath(hand.transform.position);
             followObject.transform.position = node.cur;
             followObject.LookAt(node.next);
+        }
+    }
+
+    public void GenerateSmog(){
+        foreach(Vector3 vec in positions){
+            Instantiate(smogParticle, GetClosestPointOnPath(vec).cur + (Vector3)Random.insideUnitCircle, Quaternion.identity);
         }
     }
 
